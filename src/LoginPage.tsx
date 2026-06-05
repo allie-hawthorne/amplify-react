@@ -6,30 +6,33 @@ interface LoginPageProps {
 }
 export const LoginPage = ({ setIsLoginPage }: LoginPageProps) => {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const [isRegister, setIsRegister] = useState(false);
 
   const handleSignUp = async () => {
-    await signUp({
+    const res = await signUp({
       username: email,
       password,
-      options: { userAttributes: { email } }
+      options: { userAttributes: { email, given_name: name } }
     });
+
+    if (res.isSignUpComplete) handleSignIn();
   };
 
   const handleSignIn = async () => {
     await signIn({
       username: email,
       password,
-      options: { userAttributes: { email } }
     });
   };
   
   return <>
     <form onSubmit={e => e.preventDefault()}>
       <input type="email" placeholder='email' value={email} onChange={(e) => setEmail(e.target.value)} />
+      {isRegister && <input placeholder='name' value={name} onChange={(e) => setName(e.target.value)} />}
       <input type="password" placeholder='password' value={password} onChange={(e) => setPassword(e.target.value)} />
       {isRegister && (
         <input type="password" placeholder='confirm password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
