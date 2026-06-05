@@ -6,12 +6,12 @@ export const useAuth = () => {
   const [user, setUser] = useState<FetchUserAttributesOutput>();
 
   useEffect(() => {
-  checkUser();
+    checkUser();
 
-  const fn = Hub.listen('auth', checkUser);
+    const fn = Hub.listen('auth', checkUser);
 
-  return fn;
-}, []);
+    return fn;
+  }, []);
 
   const checkUser = async () => {
     try {
