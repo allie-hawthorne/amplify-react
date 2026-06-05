@@ -1,29 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { LoginPage } from './LoginPage';
-import { fetchUserAttributes, signOut, type FetchUserAttributesOutput } from 'aws-amplify/auth';
-import { Hub } from 'aws-amplify/utils';
+import { signOut } from 'aws-amplify/auth';
+import { useAuth } from './useAuth';
 
 function App() {
   const [isLoginPage, setIsLoginPage] = useState(false);
-  const [user, setUser] = useState<FetchUserAttributesOutput>();
+  const user = useAuth();
 
-  useEffect(() => {
-    checkUser();
-
-    const fn = Hub.listen('auth', checkUser);
-
-    return fn;
-  }, []);
-
-  const checkUser = async () => {
-    try {
-      const user = await fetchUserAttributes();
-      setUser(user);
-    } catch {
-      setUser(undefined);
-    }
-  };
-  
   if (user) return <>
     <h3>Welcome, {user.given_name}!</h3>
     <button onClick={() => signOut()}>Logout</button>
