@@ -48,7 +48,7 @@ export const LoginPage = ({ setPage }: LoginPageProps) => {
     });
   };
   
-  return <div className="flex flex-col gap-4 items-center justify-center w-full h-full">
+  return <>
     <form className="flex flex-col w-sm gap-4" onSubmit={e => e.preventDefault()}>
       <Input type="email" value={email} setState={setEmail} />
       {isRegister && <Input placeholder="name" value={name} setState={setName}/>}
@@ -62,5 +62,5 @@ export const LoginPage = ({ setPage }: LoginPageProps) => {
       </div>
     </form>
     <button className="cursor-pointer" onClick={() => setPage('')}>Back</button>
-  </div>;
+  </>;
 }
