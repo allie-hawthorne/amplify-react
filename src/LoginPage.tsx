@@ -1,10 +1,18 @@
 import { signIn, signUp } from "aws-amplify/auth";
 import { useState } from "react";
 
-interface LoginPageProps {
-  setIsLoginPage: (isLoginPage: boolean) => void;
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  setState: (v: string) => void
 }
-export const LoginPage = ({ setIsLoginPage }: LoginPageProps) => {
+const Input = ({setState, ...inputProps}: InputProps) => {
+  const {type, placeholder} = inputProps
+  return <input className="bg-gray-700 p-2 rounded-lg" {...inputProps} placeholder={placeholder ?? type} onChange={e => setState(e.target.value)} />;
+}
+
+interface LoginPageProps {
+  setPage: (page: string) => void;
+}
+export const LoginPage = ({ setPage }: LoginPageProps) => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -22,29 +30,29 @@ export const LoginPage = ({ setIsLoginPage }: LoginPageProps) => {
     if (res.isSignUpComplete) handleSignIn();
   };
 
-  const handleSignIn = async () => {
-    await signIn({
+  const handleSignIn = () => {
+    signIn({
       username: email,
       password,
     });
   };
   
-  return <>
-    <form onSubmit={e => e.preventDefault()}>
-      <input type="email" placeholder='email' value={email} onChange={(e) => setEmail(e.target.value)} />
-      {isRegister && <input placeholder='name' value={name} onChange={(e) => setName(e.target.value)} />}
-      <input type="password" placeholder='password' value={password} onChange={(e) => setPassword(e.target.value)} />
-      {isRegister && (
-        <input type="password" placeholder='confirm password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-      )}
-      {isRegister
-        ? <button onClick={handleSignUp}>Sign Up</button>
-        : <button onClick={handleSignIn}>Sign In</button>
-      }
+  return <div className="flex flex-col gap-4 items-center justify-center w-full h-full">
+    <form className="flex flex-col w-sm gap-4" onSubmit={e => e.preventDefault()}>
+      <Input type="email" value={email} setState={setEmail} />
+      {isRegister && <Input placeholder="name" value={name} setState={setName}/>}
+      <Input type="password" value={password} setState={setPassword} />
+      {isRegister && <Input type="password" placeholder="confirm password" value={confirmPassword} setState={setConfirmPassword} />}
+      <div className="flex flex-row-reverse w-full justify-between">
+        {isRegister
+          ? <button className="bg-pink-300 py-2 px-4 rounded-2xl" type="submit" onClick={handleSignUp}>Sign Up</button>
+          : <button className="bg-pink-300 py-2 px-4 rounded-2xl" type="submit" onClick={handleSignIn}>Sign In</button>
+        }
+        <button className="text-pink-300 opacity-70" onClick={() => setIsRegister(!isRegister)}>
+          {isRegister ? 'Already have an account?' : "Don't have an account?"}
+        </button>
+      </div>
     </form>
-    <button onClick={() => setIsRegister(!isRegister)}>
-      {isRegister ? 'Already have an account?' : "Don't have an account?"}
-    </button>
-    <button onClick={() => setIsLoginPage(false)}>Back</button>
-  </>;
+    <button className="cursor-pointer" onClick={() => setPage('')}>Back</button>
+  </div>;
 }
