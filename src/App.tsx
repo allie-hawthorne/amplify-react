@@ -1,13 +1,18 @@
 import { useAuth } from './useAuth';
-import { AuthHome } from './AuthHome';
-import { UnAuthHome } from './UnAuthHome';
+import { Navbar } from './Navbar';
+import { useState } from 'react';
+import { LoginPage } from './LoginPage';
 
 function App() {
-  const user = useAuth();
+  const [page, setPage] = useState('');
+  const { user, loading } = useAuth(setPage);
+  
+  if (loading) return;
 
-  return user
-    ? <AuthHome user={user} />
-    : <UnAuthHome />;
+  return <>
+     <Navbar user={user} setPage={setPage} />
+     {page === 'login' && <LoginPage setPage={setPage} />}
+  </>;
 }
 
 export default App

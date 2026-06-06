@@ -1,8 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { Amplify } from 'aws-amplify';
 import './index.css'
 import App from './App.tsx'
-import { Amplify } from 'aws-amplify';
 
 Amplify.configure({
   Auth: {
@@ -15,6 +15,8 @@ Amplify.configure({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <div className='h-screen bg-gray-800'>
+      <App />
+    </div>
   </StrictMode>,
 )
