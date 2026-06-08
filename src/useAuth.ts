@@ -18,7 +18,6 @@ export const useAuth = (setPage: (page: string) => void) => {
     setLoading(true);
     try {
       const user = await fetchUserAttributes();
-      console.log(user);
       setUser(user);
       setPage('');
     } catch {
