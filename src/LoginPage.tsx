@@ -10,6 +10,7 @@ export const LoginPage = ({ setPage }: LoginPageProps) => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
 
   const [isRegister, setIsRegister] = useState(false);
 
@@ -18,15 +19,19 @@ export const LoginPage = ({ setPage }: LoginPageProps) => {
       username: email,
       password,
       options: { userAttributes: { email, given_name: name } }
+    }).catch(e => {
+      if (e instanceof Error) setError(e.message);
     });
 
-    if (res.isSignUpComplete) handleSignIn();
+    if (res?.isSignUpComplete) handleSignIn();
   };
 
   const handleSignIn = () => {
     signIn({
       username: email,
       password,
+    }).catch(e => {
+      if (e instanceof Error) setError(e.message);
     });
   };
   
@@ -36,6 +41,7 @@ export const LoginPage = ({ setPage }: LoginPageProps) => {
       {isRegister && <Input placeholder="name" value={name} setState={setName}/>}
       <Input type="password" value={password} setState={setPassword} />
       {isRegister && <Input type="password" placeholder="confirm password" value={confirmPassword} setState={setConfirmPassword} />}
+      {error && <p className="text-red-400 text-center">{error}</p>}
       <div className="flex flex-row-reverse w-full justify-between">
         <SignInUpButton isRegister={isRegister} signIn={handleSignIn} signUp={handleSignUp} />
         <button className="text-pink-300 opacity-70" onClick={() => setIsRegister(!isRegister)}>
