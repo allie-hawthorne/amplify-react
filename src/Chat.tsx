@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { get, post } from 'aws-amplify/api';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { Button, Input } from './shared';
@@ -16,13 +16,7 @@ export const Chat = () => {
     fetchAuthSession().then(s => setToken(s.tokens?.accessToken?.toString() ?? ''));    
   }, []);
 
-  useEffect(() => {
-    if (!token) return;
-
-    getMessages().then(setMessages);
-  }, [token]);
-
-  async function getMessages() {
+  const getMessages = useCallback(async () => {
     const res = await get({
       apiName: API_NAME,
       path: PATH,
@@ -33,8 +27,14 @@ export const Chat = () => {
 
     // TODO: can we remove this typecast?
     return json as Record<string, string>[];
-  }
+  }, [token]);
   
+  useEffect(() => {
+    if (!token) return;
+
+    getMessages().then(setMessages);
+  }, [getMessages, token]);
+
   async function submitMessage() {
     const response = await post({
       apiName: API_NAME,
